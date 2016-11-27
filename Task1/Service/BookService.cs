@@ -1,39 +1,28 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Task1.Logger;
 using Task1.Service.Adapters;
-
-/*BookListService (как сервис для работы с коллекцией книг) с
-функциональностью AddBook (добавить книгу, если такой книги нет, в
-противном случае выбросить исключение); RemoveBook (удалить книгу, если
-она есть, в противном случае выбросить исключение); FindBookByTag (найти
-книгу по заданному критерию); SortBooksByTag (отсортировать список книг по
-заданному критерию).*/
+using ILogger = NLog.ILogger;
 
 namespace Task1.Service
 {
     class BookService
     {
-        public SortedSet<Book> Collection { private set; get; }// Question about
+        public SortedSet<Book> Collection { private set; get; }// Question about ref
+
         private IBookStorage<SortedSet<Book>> storage;
 
-        public void Save()
-        {
-            storage.SaveBooks(Collection);
-        }
+        private static NLogger logger;
 
-        public void Load()
+        /// <summary>
+        /// Constructors with different params.
+        /// </summary>
+        #region ctors
+        public BookService()
         {
-            Collection =  storage.LoadBooks();
-        }
-
-        public BookService(IBookStorage<SortedSet<Book>> storage, SortedSet<Book> collection)
-        {
-            this.storage = storage;
-            Collection = collection;
+            storage = new BookSetStorage();
+            Collection = new SortedSet<Book>();
         }
 
         public BookService(SortedSet<Book> collection)
@@ -42,12 +31,17 @@ namespace Task1.Service
             Collection = collection;
         }
 
-        public BookService()
+        public BookService(IBookStorage<SortedSet<Book>> storage, SortedSet<Book> collection)
         {
-            storage = new BookSetStorage();
-            Collection = new SortedSet<Book>();
+            this.storage = storage;
+            Collection = collection;
         }
-  
+        #endregion
+
+        /// <summary>
+        /// Adds book into collection.
+        /// </summary>
+        /// <param name="newBook"> Book type, contender to add to the collection.</param>
         public void AddBook(Book newBook)
         {
             if (newBook != null)
@@ -55,6 +49,10 @@ namespace Task1.Service
             else throw new ArgumentNullException();
         }
 
+        /// <summary>
+        /// Removes book from the collection.
+        /// </summary>
+        /// <param name="removingBook">Book type object for removing.</param>
         public void RemoveBook(Book removingBook)
         {
             if(removingBook == null)throw new ArgumentNullException();
@@ -63,36 +61,75 @@ namespace Task1.Service
            
         }
 
-        
-        /*public Book FindBookByTag(Comparison<Book> comparison, Book book)
-        {
-            return Collection?.Single(o => comparison(o, book) == 0);// Test Collection null but we have a ctor
-        }*/
-
+    
+        /// <summary>
+        /// Indicates equality between objects and return one from the Collection if they are equal.
+        /// </summary>
+        /// <param name="customEqualityComparer"> EqualityComparer - rule for comparing.</param>
+        /// <param name="book"> Book type object for compare.</param>
+        /// <returns> Book type object.</returns>
         public Book FindBookByTag(EqualityComparer<Book> customEqualityComparer, Book book)
         {
             if(ReferenceEquals(book,null)) throw new ArgumentNullException();
             return  Collection.Single(o => customEqualityComparer.Equals(o, book));
         }
 
-        public Book FindBookByTag(Func<Book, Book, bool> customEqualityComparer, Book book)
-        {
-            return FindBookByTag(new EquolityComparerAdapter(customEqualityComparer), book);
-            /*return Collection.FirstOrDefault(item => customEqualityComparer(item, book));*/
-        }
+        /// <summary>
+        /// Indicates equality between objects and return one from the Collection if they are equal.
+        /// </summary>
+        /// <param name="customEqualityComparer"> EqualityComparer - rule for comparing.</param>
+        /// <param name="book"> Book type object for compare.</param>
+        /// <returns> Book type object.</returns>
+        public Book FindBookByTag(Func<Book, Book, bool> customEqualityComparer, Book book) => FindBookByTag(new EquolityComparerAdapter(customEqualityComparer), book);
 
-        public void SortBooksByTag(Comparer<Book> customComparer)
-        {
-            Collection = new SortedSet<Book>(Collection, customComparer);
-        }
+        /// <summary>
+        /// Sorts books in collection by the given rule.
+        /// </summary>
+        /// <param name="customComparer"> Comparer - rule for sorting.</param>
+        public void SortBooksByTag(Comparer<Book> customComparer) => Collection = new SortedSet<Book>(Collection, customComparer);
+
+        /// <summary>
+        /// Sorts books in collection by the given rule.
+        /// </summary>
+        /// <param name="customComparer"> Comparison - rule for sorting.</param>
         public void SortBooksByTag(Comparison<Book> customComparer)
         {
             Collection = new SortedSet<Book>(Collection, new ComparerAdapter(customComparer));
         }
 
+        /// <summary>
+        /// Shows inner sortedset.
+        /// </summary>
         public void ShowCollection()
         {
-            Collection.ToList().ForEach(Console.WriteLine);
+            Collection?.ToList().ForEach(Console.WriteLine);
+        }
+
+        /// <summary>
+        /// Saves the Collection to the storage.
+        /// </summary>
+        public void Save()
+        {
+            if (Collection.Count!=0)
+                storage.SaveBooks(Collection);
+            else throw new Exception();//TODO: Storage Exception
+        }
+
+        /// <summary>
+        /// Load Books from storage to the Collection.
+        /// </summary>
+        public void Load()
+        {
+            
+            var collection = storage.LoadBooks();
+            if (collection.Count > 0)
+                Collection = collection;
+            else throw new Exception();//TODO
         }
     }
 }
+
+/*public Book FindBookByTag(Comparison<Book> comparison, Book book)
+{
+    return Collection?.Single(o => comparison(o, book) == 0);// Test Collection null but we have a ctor
+}*/

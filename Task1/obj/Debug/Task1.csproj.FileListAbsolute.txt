@@ -4,3 +4,6 @@ C:\Home\EPAM\NET.W.2016.01.Bulavsky.12\Task1\bin\Debug\Task1.pdb
 C:\Home\EPAM\NET.W.2016.01.Bulavsky.12\Task1\obj\Debug\Task1.exe
 C:\Home\EPAM\NET.W.2016.01.Bulavsky.12\Task1\obj\Debug\Task1.pdb
 C:\Home\EPAM\NET.W.2016.01.Bulavsky.12\Task1\bin\Debug\Task1.exe.config
+C:\Home\EPAM\NET.W.2016.01.Bulavsky.12\Task1\bin\Debug\NLog.dll
+C:\Home\EPAM\NET.W.2016.01.Bulavsky.12\Task1\bin\Debug\NLog.xml
+C:\Home\EPAM\NET.W.2016.01.Bulavsky.12\Task1\bin\Debug\NLog.config

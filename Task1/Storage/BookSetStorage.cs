@@ -2,26 +2,17 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-/*
- Для выполнения основных операций со
-списком книг, который ​можно ​загрузить и, ​если возникнет необходимость ​,
-сохранить в некоторое хранилище BookSetStorage
-
- В качестве хранилища использовать
-- двоичный файл, для работы с которым использовать только классы
-BinaryReader, BinaryWriter ​. ​Хранилище в дальнейшем может измениться
-(добавиться)*/
 
 namespace Task1
 {
     class BookSetStorage : IBookStorage<SortedSet<Book>>
     {
-        public SortedSet<Book> Collection { get; set; }
+        public SortedSet<Book> Collection { get; private set; }
 
+        /// <summary>
+        /// Load Books from storage.
+        /// </summary>
+        /// <returns> Collection of the books. </returns>
         public SortedSet<Book> LoadBooks()
         {
             Collection = new SortedSet<Book>();
@@ -47,8 +38,13 @@ namespace Task1
             return Collection;
         }
 
+        /// <summary>
+        /// Saves Book collection to the storage.
+        /// </summary>
+        /// <param name="collection"> Collection of the books.</param>
         public void SaveBooks(SortedSet<Book> collection)
         {
+            if(collection == null) throw new ArgumentNullException();
             try
             {
                 using (var f = new BinaryWriter(new BufferedStream(File.Open(ConfigurationManager.AppSettings["StoragePath"],FileMode.OpenOrCreate))))

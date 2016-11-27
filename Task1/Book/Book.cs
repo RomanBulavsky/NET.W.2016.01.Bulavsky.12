@@ -1,27 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-/*
- * Разработать класс Book с 4-5 свойствами, переопределив для него
-необходимые методы класса Object. Для объектов класса реализовать
-отношения эквивалентности и порядка. Для выполнения основных операций со
-списком книг, который ​можно ​загрузить и, ​если возникнет необходимость ​,
-сохранить в некоторое хранилище BookSetStorage разработать класс
-BookListService (как сервис для работы с коллекцией книг) с
-функциональностью AddBook (добавить книгу, если такой книги нет, в
-противном случае выбросить исключение); RemoveBook (удалить книгу, если
-она есть, в противном случае выбросить исключение); FindBookByTag (найти
-книгу по заданному критерию); SortBooksByTag (отсортировать список книг по
-заданному критерию). Реализовать возможность логирования сообщений
-различного уровня. Работу классов продемонстрировать на примере
-консольного приложения.
-В качестве хранилища использовать
-- двоичный файл, для работы с которым использовать только классы
-BinaryReader, BinaryWriter ​. ​Хранилище в дальнейшем может измениться
-(добавиться)
- */
+
 namespace Task1
 {
     public class Book : IEquatable<Book>, IComparable<Book>, IComparable
@@ -32,14 +11,13 @@ namespace Task1
         public string Publisher { get; }
         public int NumberOfPages { get; }
 
-        public Book()
-        {
-        }
-
-        public override string ToString() => $"{this.Title} by {this.Author} in {this.Genre} genre, published by {this.Publisher} with {this.NumberOfPages} pages";
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public Book():this("Smith", "Jhon", "Comedy", "JS", 1233){}
 
         /// <summary>
-        /// Constructor
+        /// Constructor.
         /// </summary>
         /// <param name="author">Author name.</param>
         /// <param name="title">Title of the book.</param>
@@ -48,6 +26,11 @@ namespace Task1
         /// <param name="numberOfPages">Number of pages.</param>
         public Book(string author, string title, string genre, string publisher, int numberOfPages)
         {
+            if (author == null || title == null || genre == null || publisher == null || numberOfPages < 1)
+            {
+
+                throw new ArgumentNullException();
+            }
             Author = author;
             Title = title;
             Genre = genre;
@@ -55,6 +38,11 @@ namespace Task1
             NumberOfPages = numberOfPages;
         }
 
+        /// <summary>
+        /// Indicates equality between Book type objects.
+        /// </summary>
+        /// <param name="other"> Book type object for comparing. </param>
+        /// <returns> Boolean value indicates equality of the parameters. </returns>
         public bool Equals(Book other)
         {
             if (ReferenceEquals(null, other)) return false;
@@ -64,6 +52,11 @@ namespace Task1
                 && NumberOfPages == other.NumberOfPages;
         }
 
+        /// <summary>
+        /// Indicates equality between objects.
+        /// </summary>
+        /// <param name="obj"> Object for comparing. </param>
+        /// <returns> Boolean value indicates equality of the parameters. </returns>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -72,6 +65,10 @@ namespace Task1
             return Equals((Book) obj);
         }
 
+        /// <summary>
+        /// Computes a hash code of the Book type object.
+        /// </summary>
+        /// <returns> Integer type, hash code.</returns>
         public override int GetHashCode()
         {
             unchecked
@@ -85,16 +82,36 @@ namespace Task1
             }
         }
 
+        /// <summary>
+        /// Works like Equals.
+        /// </summary>
+        /// <param name="left"> Book type object for comparing. </param>
+        /// <param name="right"> Book type object for comparing. </param>
+        /// <returns> Boolean value indicates equality of the parameters.</returns>
         public static bool operator ==(Book left, Book right)
         {
             return Equals(left, right);
         }
 
+        /// <summary>
+        /// Works like inverse Equals Method.
+        /// </summary>
+        /// <param name="left"> Object for comparing.</param>
+        /// <param name="right"> Object for comparing.</param>
+        /// <returns> Boolean value indicates non-equality of the parameters.</returns>
         public static bool operator !=(Book left, Book right)
         {
             return !Equals(left, right);
         }
 
+        /// <summary>
+        /// Compares the current instance with another object of the same type 
+        /// and returns an integer that indicates whether the current instance precedes,
+        /// follows, or occurs in the same position in the sort order as the other object.
+        /// </summary>
+        /// <param name="obj"> Object with the Book type. </param>
+        /// <returns> Integer that indicates whether the current instance precedes,
+        /// follows, or occurs in the same position in the sort order as the other object.</returns>
         public int CompareTo(Book other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -110,6 +127,14 @@ namespace Task1
             return NumberOfPages.CompareTo(other.NumberOfPages);
         }
 
+        /// <summary>
+        /// Compares the current instance with another object of the same type 
+        /// and returns an integer that indicates whether the current instance precedes,
+        /// follows, or occurs in the same position in the sort order as the other object.
+        /// </summary>
+        /// <param name="obj"> Object with the object type.</param>
+        /// <returns>Integer that indicates whether the current instance precedes,
+        /// follows, or occurs in the same position in the sort order as the other object.</returns>
         public int CompareTo(object obj)
         {
             if (ReferenceEquals(null, obj)) return 1;
@@ -117,7 +142,13 @@ namespace Task1
             if (!(obj is Book)) throw new ArgumentException($"Object must be of type {nameof(Book)}");
             return CompareTo((Book) obj);
         }
-        
+
+        /// <summary>
+        /// Represents Book type like a string.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString() => $"{this.Title} by {this.Author} in {this.Genre} genre, published by : {this.Publisher} that contains {this.NumberOfPages} pages";
+
         public static bool operator <(Book left, Book right)
         {
             return Comparer<Book>.Default.Compare(left, right) < 0;
@@ -137,5 +168,7 @@ namespace Task1
         {
             return Comparer<Book>.Default.Compare(left, right) >= 0;
         }
+
+
     }
 }

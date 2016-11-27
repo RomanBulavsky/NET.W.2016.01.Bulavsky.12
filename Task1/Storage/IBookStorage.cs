@@ -10,8 +10,16 @@ namespace Task1
 {
     interface IBookStorage<T> where T : class, IEnumerable
     {
-        T Collection { get;set; }
+        T Collection { get; }
+        /// <summary>
+        /// Load Books from storage.
+        /// </summary>
+        /// <returns> Collection of the books. </returns>
         T LoadBooks();
+        /// <summary>
+        /// Saves Book collection to the storage.
+        /// </summary>
+        /// <param name="collection"> Collection of the books.</param>
         void SaveBooks(T collection);
     }
 }

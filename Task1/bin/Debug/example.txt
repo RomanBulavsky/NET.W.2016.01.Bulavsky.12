@@ -1,0 +1,2 @@
+2016-11-27 09:13:16.8365|FATAL|Task1.Program|   at Task1.Service.BookService.AddBook(Book newBook) in C:\Home\EPAM\NET.W.2016.01.Bulavsky.12\Task1\Service\BookService.cs:line 43
+   at Task1.Program.Main() in C:\Home\EPAM\NET.W.2016.01.Bulavsky.12\Task1\Program.cs:line 44
