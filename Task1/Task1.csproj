@@ -49,10 +49,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Book\Book.cs" />
+    <Compile Include="CustomException\ServiceException.cs" />
+    <Compile Include="CustomException\StorageException.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\NLogger.cs" />
-    <Compile Include="Service\Adaptors\ComparerAdapter.cs" />
-    <Compile Include="Service\Adaptors\EquolityComparerAdapter.cs" />
+    <Compile Include="Service\Adapters\ComparerAdapter.cs" />
+    <Compile Include="Service\Adapters\EquolityComparerAdapter.cs" />
     <Compile Include="Service\BookService.cs" />
     <Compile Include="Storage\BookSetStorage.cs" />
     <Compile Include="Storage\IBookStorage.cs" />

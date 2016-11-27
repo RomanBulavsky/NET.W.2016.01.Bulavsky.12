@@ -11,11 +11,13 @@ namespace Task1
     interface IBookStorage<T> where T : class, IEnumerable
     {
         T Collection { get; }
+
         /// <summary>
         /// Load Books from storage.
         /// </summary>
         /// <returns> Collection of the books. </returns>
         T LoadBooks();
+
         /// <summary>
         /// Saves Book collection to the storage.
         /// </summary>

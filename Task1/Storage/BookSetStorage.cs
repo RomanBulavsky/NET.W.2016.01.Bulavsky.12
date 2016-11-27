@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using Task1.CustomException;
 
 namespace Task1
 {
@@ -18,7 +19,7 @@ namespace Task1
             Collection = new SortedSet<Book>();
             try
             {
-                using (var f = new BinaryReader(new BufferedStream(File.Open(ConfigurationManager.AppSettings["StoragePath"], FileMode.Open))))
+                using (var f = new BinaryReader(new BufferedStream(File.Open(ConfigurationManager.AppSettings["toragePath"], FileMode.Open))))
                 {
                     while (f.BaseStream.Position < f.BaseStream.Length)
                     {
@@ -33,8 +34,11 @@ namespace Task1
             }
             catch (IOException e)
             {
-                throw new Exception(); //TODO: Wrapper
+                throw new StorageException("Loading IO Exception",e); 
             }
+            if(Collection.Count < 1)
+                throw new StorageException("Loading Exception");
+
             return Collection;
         }
 
@@ -45,6 +49,7 @@ namespace Task1
         public void SaveBooks(SortedSet<Book> collection)
         {
             if(collection == null) throw new ArgumentNullException();
+            if(collection.Count <1) throw new StorageException("Can't save empty collection.");
             try
             {
                 using (var f = new BinaryWriter(new BufferedStream(File.Open(ConfigurationManager.AppSettings["StoragePath"],FileMode.OpenOrCreate))))
@@ -61,7 +66,7 @@ namespace Task1
             }
             catch (IOException e)
             {
-                throw new Exception(); //TODO: Wrapper
+                throw new StorageException("Saving Exception", e);
             }
     }
 }

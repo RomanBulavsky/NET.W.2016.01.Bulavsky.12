@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Task1.CustomException;
 using Task1.Logger;
 using Task1.Service.Adapters;
 using ILogger = NLog.ILogger;
@@ -11,9 +12,7 @@ namespace Task1.Service
     {
         public SortedSet<Book> Collection { private set; get; }// Question about ref
 
-        private IBookStorage<SortedSet<Book>> storage;
-
-        private static NLogger logger;
+        private IBookStorage<SortedSet<Book>> storage;        
 
         /// <summary>
         /// Constructors with different params.
@@ -27,12 +26,15 @@ namespace Task1.Service
 
         public BookService(SortedSet<Book> collection)
         {
+            if(collection == null) throw new ServiceException("Ctor collection exception", new ArgumentNullException());
             storage = new BookSetStorage();
             Collection = collection;
         }
 
         public BookService(IBookStorage<SortedSet<Book>> storage, SortedSet<Book> collection)
         {
+
+            if (collection == null || storage == null) throw new ServiceException("Ctor storage or collection exception", new ArgumentNullException());
             this.storage = storage;
             Collection = collection;
         }
@@ -46,7 +48,7 @@ namespace Task1.Service
         {
             if (newBook != null)
                 Collection.Add(newBook);
-            else throw new ArgumentNullException();
+            else throw new ServiceException("Adding error", new ArgumentNullException());
         }
 
         /// <summary>
@@ -55,10 +57,9 @@ namespace Task1.Service
         /// <param name="removingBook">Book type object for removing.</param>
         public void RemoveBook(Book removingBook)
         {
-            if(removingBook == null)throw new ArgumentNullException();
-            if (Collection.Contains(removingBook))
+            if(removingBook != null)
                 Collection.Remove(removingBook);
-           
+            else throw new ServiceException("Removing error", new ArgumentNullException());  
         }
 
     
@@ -70,7 +71,7 @@ namespace Task1.Service
         /// <returns> Book type object.</returns>
         public Book FindBookByTag(EqualityComparer<Book> customEqualityComparer, Book book)
         {
-            if(ReferenceEquals(book,null)) throw new ArgumentNullException();
+            if (customEqualityComparer == null || book == null) throw new ServiceException("Bad params for finding", new ArgumentNullException());
             return  Collection.Single(o => customEqualityComparer.Equals(o, book));
         }
 
@@ -80,13 +81,21 @@ namespace Task1.Service
         /// <param name="customEqualityComparer"> EqualityComparer - rule for comparing.</param>
         /// <param name="book"> Book type object for compare.</param>
         /// <returns> Book type object.</returns>
-        public Book FindBookByTag(Func<Book, Book, bool> customEqualityComparer, Book book) => FindBookByTag(new EquolityComparerAdapter(customEqualityComparer), book);
+        public Book FindBookByTag(Func<Book, Book, bool> customEqualityComparer, Book book)
+        {
+            if(customEqualityComparer == null || book == null) throw new ServiceException("Bad params for finding", new ArgumentNullException());
+            return FindBookByTag(new EquolityComparerAdapter(customEqualityComparer), book);
+        }
 
         /// <summary>
         /// Sorts books in collection by the given rule.
         /// </summary>
         /// <param name="customComparer"> Comparer - rule for sorting.</param>
-        public void SortBooksByTag(Comparer<Book> customComparer) => Collection = new SortedSet<Book>(Collection, customComparer);
+        public void SortBooksByTag(Comparer<Book> customComparer)
+        {
+            if (customComparer == null) throw new ServiceException("Bad Comparer");
+            Collection = new SortedSet<Book>(Collection, customComparer);
+        }
 
         /// <summary>
         /// Sorts books in collection by the given rule.
@@ -94,6 +103,7 @@ namespace Task1.Service
         /// <param name="customComparer"> Comparison - rule for sorting.</param>
         public void SortBooksByTag(Comparison<Book> customComparer)
         {
+            if(customComparer == null) throw new ServiceException("Bad Comparison");
             Collection = new SortedSet<Book>(Collection, new ComparerAdapter(customComparer));
         }
 
@@ -110,9 +120,7 @@ namespace Task1.Service
         /// </summary>
         public void Save()
         {
-            if (Collection.Count!=0)
-                storage.SaveBooks(Collection);
-            else throw new Exception();//TODO: Storage Exception
+            storage.SaveBooks(Collection);
         }
 
         /// <summary>
@@ -120,11 +128,7 @@ namespace Task1.Service
         /// </summary>
         public void Load()
         {
-            
-            var collection = storage.LoadBooks();
-            if (collection.Count > 0)
-                Collection = collection;
-            else throw new Exception();//TODO
+            Collection = storage.LoadBooks();
         }
     }
 }
