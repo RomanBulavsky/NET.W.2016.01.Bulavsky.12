@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<ArrayOfBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Book>
+    <Author>Aoman2</Author>
+    <Title>Bitle</Title>
+    <Genre>Ganre</Genre>
+    <Publisher>Publisher</Publisher>
+    <NumberOfPages>3</NumberOfPages>
+  </Book>
+  <Book>
+    <Author>Roman</Author>
+    <Title>Ditle</Title>
+    <Genre>Ganre</Genre>
+    <Publisher>Publisher</Publisher>
+    <NumberOfPages>4</NumberOfPages>
+  </Book>
+  <Book>
+    <Author>Roman3</Author>
+    <Title>Aitle</Title>
+    <Genre>Ganre</Genre>
+    <Publisher>Publisher</Publisher>
+    <NumberOfPages>2</NumberOfPages>
+  </Book>
+  <Book>
+    <Author>Roman4</Author>
+    <Title>Title</Title>
+    <Genre>Ganre</Genre>
+    <Publisher>Publisher</Publisher>
+    <NumberOfPages>1</NumberOfPages>
+  </Book>
+</ArrayOfBook>

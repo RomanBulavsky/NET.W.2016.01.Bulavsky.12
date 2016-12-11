@@ -1,20 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
-namespace Task1
+namespace BookNS
 {
+    [Serializable]
     public class Book : IEquatable<Book>, IComparable<Book>, IComparable
     {
-        public string Author { get; }
-        public string Title { get; }
-        public string Genre { get; }
-        public string Publisher { get; }
-        public int NumberOfPages { get; }
+        //[XmlElement("Author")]
+        public string Author { get; set; }
+        //[XmlElement("Title")]
+        public string Title { get; set; }
+        //[XmlElement("Genre")]
+        public string Genre { get; set; }
+        //[XmlElement("Publisher")]
+        public string Publisher { get; set; }
+        //[XmlElement("NumberOfPages")]
+        public int NumberOfPages { get; set; }
 
         /// <summary>
         /// Default constructor.
         /// </summary>
         public Book():this("Smith", "Jhon", "Comedy", "JS", 1233){}
+      
 
         /// <summary>
         /// Constructor.

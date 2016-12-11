@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BookNS;
+using BookNS.Storage;
 using NLog;
 using Task1.CustomException;
 using Task1.Service;
@@ -25,6 +27,7 @@ namespace Task1
 
             try
             {
+                
                 //var x = new BookService();
                 //x.Load();
                 //x.ShowCollection();
@@ -43,7 +46,19 @@ namespace Task1
                 bookService.AddBook(book3);
                 bookService.AddBook(book4);
 
-                bookService.ShowCollection();
+                //var x = new BookService(new BookSetStorageBinarySerializer(),bookService.Collection);
+                //x.Save();
+                //BookService x = new BookService(new BookSetStorageBinarySerializer());
+                //x.Load();
+
+                //var x = new BookService(new BookSetStorageXmlSerializer(),bookService.Collection);
+                //x.Save();
+                //BookService z = new BookService(new BookSetStorageXmlSerializer());
+                //z.Load();
+
+
+
+                //bookService.ShowCollection();
 
                 var found = bookService.FindBookByTag((a, b) => a.Author == b.Author, book2);
                 Console.WriteLine($"found: {found}");

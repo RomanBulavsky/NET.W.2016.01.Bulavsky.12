@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BookNS;
 using Task1.CustomException;
 using Task1.Logger;
 using Task1.Service.Adapters;
@@ -37,6 +38,13 @@ namespace Task1.Service
             if (collection == null || storage == null) throw new ServiceException("Ctor storage or collection exception", new ArgumentNullException());
             this.storage = storage;
             Collection = collection;
+        }
+        public BookService(IBookStorage<SortedSet<Book>> storage)
+        {
+
+            // if (collection == null || storage == null) throw new ServiceException("Ctor storage or collection exception", new ArgumentNullException());
+            this.storage = storage;
+            //Collection = collection;
         }
         #endregion
 
